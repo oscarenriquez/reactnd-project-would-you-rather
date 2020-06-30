@@ -1,0 +1,25 @@
+.nav {
+  display: flex;
+  justify-content: center;
+
+  &-item {
+    padding: 5px 12px;
+    margin: 0 5px;
+    text-decoration: none;
+    text-underline: none;
+    color: #fff;
+
+    &.selected{
+      border-radius: 3px 3px 0 0;
+      background-color: yellow;
+      color: #000;
+    }
+  }
+}
+
+.toolbar {
+  &-title {
+    flex-grow: 1;
+    text-align: center;
+  }
+}

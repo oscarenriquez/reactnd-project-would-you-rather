@@ -1,26 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useEffect} from 'react';
+import Layout from "./components/Layout";
+import {Switch, Route} from "react-router-dom";
+import Home from "./components/Home";
+import NewQuestion from "./components/NewQuestion";
+import LeaderBoard from "./components/LeaderBoard";
+import Login from "./components/Login";
+import {Redirect} from "react-router";
+import {connect} from "react-redux";
+import {fetchUsers} from "./actions/userActions";
+import {fetchQuestions} from "./actions/questionActions";
+import AnswerQuestion from "./components/AnswerQuestion";
+import ViewResult from "./components/ViewResult";
+import PrivateRoute from "./components/PrivateRoute";
 
-function App() {
+const App = React.memo((props) => {
+  useEffect(()=>{
+    props.dispatch(fetchUsers)
+    props.dispatch(fetchQuestions)
+  })
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Layout>
+          <Switch>
+              <Redirect exact path="/" to="/Login" />
+              <PrivateRoute path="/Home" component={Home} />
+              <PrivateRoute path="/AnswerQuestion/:questionId" component={AnswerQuestion}/>
+              <PrivateRoute path="/ViewResult/:questionId" component={ViewResult}/>
+              <PrivateRoute path="/NewQuestion" component={NewQuestion}/>
+              <PrivateRoute path="/LeaderBoard" component={LeaderBoard}/>
+              <Route path="/Login" component={Login}/>
+          </Switch>
+      </Layout>
   );
-}
+})
 
-export default App;
+export default connect()( App );
