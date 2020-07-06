@@ -9,28 +9,34 @@ import {Redirect} from "react-router";
 import {connect} from "react-redux";
 import {fetchUsers} from "./actions/userActions";
 import {fetchQuestions} from "./actions/questionActions";
-import AnswerQuestion from "./components/AnswerQuestion";
-import ViewResult from "./components/ViewResult";
 import PrivateRoute from "./components/PrivateRoute";
+import Page404 from "./components/Page404";
+import ViewQuestion from "./components/ViewQuestion";
+import Logout from "./components/Logout";
 
-const App = React.memo((props) => {
-  useEffect(()=>{
-    props.dispatch(fetchUsers)
+const App = (props) => {
+
+  useEffect(() => {
     props.dispatch(fetchQuestions)
+    props.dispatch(fetchUsers)
   })
+
   return (
       <Layout>
           <Switch>
-              <Redirect exact path="/" to="/Login" />
-              <PrivateRoute path="/Home" component={Home} />
-              <PrivateRoute path="/AnswerQuestion/:questionId" component={AnswerQuestion}/>
-              <PrivateRoute path="/ViewResult/:questionId" component={ViewResult}/>
-              <PrivateRoute path="/NewQuestion" component={NewQuestion}/>
-              <PrivateRoute path="/LeaderBoard" component={LeaderBoard}/>
-              <Route path="/Login" component={Login}/>
+              <Redirect exact path="/" to="/login" />
+              <PrivateRoute path="/home" component={Home} />
+              <PrivateRoute path="/questions/:question_id" component={ViewQuestion}/>
+              <PrivateRoute path="/add" component={NewQuestion}/>
+              <PrivateRoute path="/leaderboard" component={LeaderBoard}/>
+              <Route path="/login" component={Login}/>
+              <Route path="/logout" component={Logout}/>
+              <Route component={Page404} />
           </Switch>
       </Layout>
   );
-})
+}
+
+
 
 export default connect()( App );

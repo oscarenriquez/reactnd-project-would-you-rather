@@ -1,25 +1,15 @@
 import React, { useState } from "react";
 import {Card, CardContent, CardHeader, CardMedia, Typography, FormControl, RadioGroup, FormControlLabel, Radio} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
-import {connect} from "react-redux";
-import {saveAnswer} from "../actions/questionActions";
+import PropTypes from "prop-types"
 
 /**
  * React Component to Save Answer
  * @type {React.NamedExoticComponent<object>}
  */
 const AnswerQuestion = React.memo((props) => {
-    const {question, user, authedUser} = props
+    const {question, author, handleSave} = props
     const [answer, setAnswer] = useState('optionOne')
-
-    // validate if the user was loaded
-    if(!question || !user) {
-        return (
-            <div>
-                loading
-            </div>
-        )
-    }
 
     // handle answer change
     const handleChange = (event) => {
@@ -27,11 +17,9 @@ const AnswerQuestion = React.memo((props) => {
         setAnswer(value)
     }
 
-    // handle answer submit and disptach action
     const handleSubmit = (event) => {
         event.preventDefault()
-        props.dispatch(saveAnswer({ authedUser, qid: question.id, answer }))
-        props.history.push(`/ViewResult/${question.id}`)
+        handleSave(answer)
     }
 
     return (
@@ -39,13 +27,13 @@ const AnswerQuestion = React.memo((props) => {
             <Card className="question card">
                 <CardHeader
                     className="card-header"
-                    title={user.name + " asks: "}
+                    title={author.name + " asks: "}
                 />
                 <div className="card-content">
                     <CardMedia
                         className="card-content-media"
-                        image={user.avatarURL}
-                        title={user.id}
+                        image={author.avatarURL}
+                        title={author.id}
                     />
                     <CardContent
                         className="card-content-details"
@@ -71,15 +59,11 @@ const AnswerQuestion = React.memo((props) => {
     )
 })
 
-const mapStateToProps = ({questions, users, user}, ownProps) => {
-    const { questionId } = ownProps.match.params
-    const question = questions[questionId]
-    return {
-        user: users[question.author],
-        question,
-        authedUser: user
-    }
+AnswerQuestion.propTypes = {
+    question: PropTypes.object,
+    author: PropTypes.object,
+    handleSave: PropTypes.func
 }
 
-export default connect(mapStateToProps)( AnswerQuestion )
+export default AnswerQuestion
 

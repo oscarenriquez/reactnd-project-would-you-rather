@@ -2,6 +2,8 @@ import React, {useState} from "react";
 import {connect} from "react-redux";
 import { Grid, Tabs, Tab } from "@material-ui/core";
 import Questions from "./Questions";
+import {isInitialized, isQuestionAnswered} from "../utils/helpers";
+import Loading from "./Loading";
 
 /**
  * Home Component
@@ -10,11 +12,13 @@ import Questions from "./Questions";
  * @constructor
  */
 const Home = (props) => {
-    const {isAuthenticated, questions, user} = props
+    const {questions, authedUser, isInitialized} = props
     const [tab, setTab] = useState(0)
 
-    if(!isAuthenticated) {
-        props.history.push('Login')
+    if (!isInitialized) {
+        return (
+            <Loading />
+        )
     }
 
     const handleChange = (event, tab) => {
@@ -22,45 +26,24 @@ const Home = (props) => {
     }
 
     const handleViewResult = (question) => {
-        if(question.answered) {
-            props.history.push(`ViewResult/${question.id}`)
-        } else {
-            props.history.push(`AnswerQuestion/${question.id}`)
-        }
+        props.history.push(`questions/${question.id}`)
     }
 
     const filteredQuestions = () => {
         if(tab === 0) {
+            // Unanswered questions
             return Object.keys(questions)
                 .map(k => questions[k])
                 .filter(question => {
-                    if (question.author !== user && question.optionOne.votes.indexOf(user) < 0 &&
-                        question.optionTwo.votes.indexOf(user) < 0
-                    ) {
-                        return true
-                    }
+                    return !isQuestionAnswered(question, authedUser)
                 })
-                .map(q => {
-                    return {
-                        ...q,
-                        answered: false
-                    }
-                })
+
         } else {
+            // Answered questions
             return Object.keys(questions)
                 .map(k => questions[k])
                 .filter(question => {
-                    if (question.optionOne.votes.indexOf(user) >= 0 ||
-                        question.optionTwo.votes.indexOf(user) >= 0
-                    ) {
-                        return true
-                    }
-                })
-                .map(q => {
-                    return {
-                        ...q,
-                        answered: true
-                    }
+                    return isQuestionAnswered(question, authedUser)
                 })
         }
     }
@@ -86,11 +69,11 @@ const Home = (props) => {
     )
 }
 
-const mapStateToProps = ({questions, user}) => {
+const mapStateToProps = ({questions, authedUser, users}) => {
     return {
         questions,
-        isAuthenticated: user !== '',
-        user
+        authedUser,
+        isInitialized: isInitialized(questions, users, authedUser)
     }
 }
 

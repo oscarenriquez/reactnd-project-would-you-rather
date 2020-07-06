@@ -8,8 +8,9 @@ import {
 import Grid from "@material-ui/core/Grid";
 import CardHeader from "@material-ui/core/CardHeader";
 import Box from "@material-ui/core/Box";
+import PropTypes from "prop-types"
 
-export default (props) => {
+const Leader = (props) => {
     const {user} = props
     const score = Object.keys(user.answers).length +
         user.questions.length;
@@ -52,3 +53,9 @@ export default (props) => {
         </Card>
     )
 }
+
+Leader.propTypes = {
+    user: PropTypes.object
+}
+
+export default Leader

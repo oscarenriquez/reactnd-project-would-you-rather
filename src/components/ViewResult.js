@@ -6,11 +6,11 @@ import {
     CardMedia,
     Typography, withStyles
 } from "@material-ui/core";
-import {connect} from "react-redux";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Badge from "@material-ui/core/Badge";
+import PropTypes from "prop-types"
 
 const BorderLinearProgress = withStyles((theme) => ({
     root: {
@@ -55,12 +55,10 @@ function LinearProgressWithLabel(props) {
 }
 
 const ViewResult = React.memo((props) => {
-    const {question, user, authedUser} = props
-    if(!authedUser || !user) {
-        props.history.push('/')
-    }
+    const {question, author, authedUser} = props
+
     const isVoted = (option) => {
-        return question[option].votes.indexOf(authedUser) >= 0
+        return question[option].votes.indexOf(authedUser.id) >= 0
     }
     const getTotalVotes = () => {
         return question.optionOne.votes.length +
@@ -81,13 +79,13 @@ const ViewResult = React.memo((props) => {
             <Card className="question card">
                 <CardHeader
                     className="card-header"
-                    title={"Asked by: " + user.name}
+                    title={"Asked by: " + author.name}
                 />
                 <div className="card-content">
                     <CardMedia
                         className="card-content-media"
-                        image={user.avatarURL}
-                        title={user.id}
+                        image={author.avatarURL}
+                        title={author.id}
                     />
                     <CardContent
                         className="card-content-details"
@@ -133,15 +131,11 @@ const ViewResult = React.memo((props) => {
     )
 })
 
-const mapStateToProps = ({questions, users, user}, ownProps) => {
-    const { questionId } = ownProps.match.params
-    const question = questions[questionId]
-    return {
-        user: question ? users[question.author] : null,
-        question,
-        authedUser: user
-    }
+ViewResult.propTypes = {
+    question: PropTypes.object,
+    author: PropTypes.object,
+    authedUser: PropTypes.object
 }
 
-export default connect(mapStateToProps)( ViewResult )
+export default ViewResult
 

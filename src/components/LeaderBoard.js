@@ -1,9 +1,18 @@
 import React from "react";
 import {connect} from "react-redux";
 import Leader from "./Leader";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import {isInitialized} from "../utils/helpers";
 
 const LeaderBoard = (props) => {
-    const {users} = props
+    const {users, isInitialized} = props
+
+    if(!isInitialized) {
+        return (
+            <CircularProgress />
+        )
+    }
+
     const getTotal = (user) => {
         return Object.keys(user.answers).length +
         user.questions.length
@@ -18,7 +27,7 @@ const LeaderBoard = (props) => {
                         return getTotal(b) - getTotal(a)
                     }).map((user) => {
                         return (
-                            <Leader user={user} />
+                            <Leader key={user.id} user={user} />
                         )
                 })
             }
@@ -26,8 +35,9 @@ const LeaderBoard = (props) => {
     )
 }
 
-const mapStateToProps = ({users}) => ({
-    users
+const mapStateToProps = ({users, questions, authedUser}) => ({
+    users,
+    isInitialized: isInitialized(questions, users, authedUser)
 })
 
 export default connect(mapStateToProps) ( LeaderBoard )

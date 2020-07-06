@@ -1,20 +1,29 @@
 import React, {useState} from "react";
-import {Card, CardContent, CardHeader, CardMedia, Typography} from "@material-ui/core";
+import {Card, CardContent, CardHeader, Typography} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import {connect} from "react-redux";
 import TextField from "@material-ui/core/TextField";
 import Box from "@material-ui/core/Box";
 import {addQuestion} from "../actions/questionActions";
+import Loading from "./Loading";
+import {isInitialized} from "../utils/helpers";
 
 const NewQuestion = (props) => {
-    const {authedUser} = props
+    const {authedUser, isInitialized} = props
+
     const [optionOneText, setOptionOneText] = useState('')
     const [optionTwoText, setOptionTwoText] = useState('')
 
+    if (!isInitialized) {
+        return (
+            <Loading />
+        )
+    }
+
     const handleAddQuestion = () => {
         if (optionTwoText && optionOneText) {
-            props.dispatch(addQuestion({ optionOneText, optionTwoText, author: authedUser }))
-            props.history.push('Home')
+            props.dispatch(addQuestion({ optionOneText, optionTwoText, author: authedUser.id }))
+            props.history.push('home')
         } else {
             alert("Please complete both answers")
         }
@@ -62,9 +71,10 @@ const NewQuestion = (props) => {
     )
 }
 
-const mapStateToProps = ({user}) => {
+const mapStateToProps = ({authedUser, questions, users}) => {
     return {
-        authedUser: user
+        authedUser,
+        isInitialized: isInitialized(questions, users, authedUser)
     }
 }
 

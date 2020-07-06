@@ -14,7 +14,7 @@ export default function createReducer() {
     const rootReducer = combineReducers({
         questions: questionReducer,
         users: userReducer,
-        user: loginReducer
+        authedUser: loginReducer
     });
 
     return rootReducer;
