@@ -1,15 +1,15 @@
 import React from "react";
 import {connect} from "react-redux";
 import Leader from "./Leader";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import {isInitialized} from "../utils/helpers";
+import Loading from "./Loading";
 
 const LeaderBoard = (props) => {
     const {users, isInitialized} = props
 
     if(!isInitialized) {
         return (
-            <CircularProgress />
+            <Loading />
         )
     }
 
