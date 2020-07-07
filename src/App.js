@@ -9,7 +9,6 @@ import {Redirect} from "react-router";
 import {connect} from "react-redux";
 import {fetchUsers} from "./actions/userActions";
 import {fetchQuestions} from "./actions/questionActions";
-import PrivateRoute from "./components/PrivateRoute";
 import Page404 from "./components/Page404";
 import ViewQuestion from "./components/ViewQuestion";
 import Logout from "./components/Logout";
@@ -25,10 +24,10 @@ const App = (props) => {
       <Layout>
           <Switch>
               <Redirect exact path="/" to="/login" />
-              <PrivateRoute path="/home" component={Home} />
-              <PrivateRoute path="/questions/:question_id" component={ViewQuestion}/>
-              <PrivateRoute path="/add" component={NewQuestion}/>
-              <PrivateRoute path="/leaderboard" component={LeaderBoard}/>
+              <Route path="/home" component={Home} />
+              <Route path="/questions/:question_id" component={ViewQuestion}/>
+              <Route path="/add" component={NewQuestion}/>
+              <Route path="/leaderboard" component={LeaderBoard}/>
               <Route path="/login" component={Login}/>
               <Route path="/logout" component={Logout}/>
               <Route component={Page404} />

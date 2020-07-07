@@ -4,6 +4,7 @@ import { Grid, Tabs, Tab } from "@material-ui/core";
 import Questions from "./Questions";
 import {isInitialized, isQuestionAnswered} from "../utils/helpers";
 import Loading from "./Loading";
+import Login from "./Login";
 
 /**
  * Home Component
@@ -21,6 +22,12 @@ const Home = (props) => {
         )
     }
 
+    if(!authedUser){
+        return (
+            <Login />
+        )
+    }
+
     const handleChange = (event, tab) => {
         setTab(tab);
     }
@@ -29,11 +36,16 @@ const Home = (props) => {
         props.history.push(`questions/${question.id}`)
     }
 
+    const questionComparator = (questionA, questionB) => {
+        return questionB.timestamp - questionA.timestamp
+    }
+
     const filteredQuestions = () => {
         if(tab === 0) {
             // Unanswered questions
             return Object.keys(questions)
                 .map(k => questions[k])
+                .sort(questionComparator)
                 .filter(question => {
                     return !isQuestionAnswered(question, authedUser)
                 })
@@ -42,6 +54,7 @@ const Home = (props) => {
             // Answered questions
             return Object.keys(questions)
                 .map(k => questions[k])
+                .sort(questionComparator)
                 .filter(question => {
                     return isQuestionAnswered(question, authedUser)
                 })
@@ -73,7 +86,7 @@ const mapStateToProps = ({questions, authedUser, users}) => {
     return {
         questions,
         authedUser,
-        isInitialized: isInitialized(questions, users, authedUser)
+        isInitialized: isInitialized(questions, users, true)
     }
 }
 

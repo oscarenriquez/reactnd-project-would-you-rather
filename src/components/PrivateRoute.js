@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Route } from "react-router-dom";
 import {connect} from "react-redux";
-import {login} from "../actions/loginActions";
 
 /**
  * Allow only routes with authentication
@@ -14,14 +13,15 @@ import {login} from "../actions/loginActions";
  */
 const PrivateRoute = ({ isAuthenticated, Component, path, ...rest }) => {
     React.useEffect(() => {
-        const authedUser = JSON.parse(sessionStorage.getItem('authedUser'))
         if (isAuthenticated) {
             return;
         }
+        // Enable session storage tracking
+        /*const authedUser = JSON.parse(sessionStorage.getItem('authedUser'))
         if (authedUser && authedUser.id) {
             rest.dispatch(login(authedUser))
             return;
-        }
+        }*/
         window.location.href = '/'
     }, [isAuthenticated, rest]);
 

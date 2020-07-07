@@ -7,6 +7,7 @@ import Box from "@material-ui/core/Box";
 import {addQuestion} from "../actions/questionActions";
 import Loading from "./Loading";
 import {isInitialized} from "../utils/helpers";
+import Login from "./Login";
 
 const NewQuestion = (props) => {
     const {authedUser, isInitialized} = props
@@ -17,6 +18,12 @@ const NewQuestion = (props) => {
     if (!isInitialized) {
         return (
             <Loading />
+        )
+    }
+
+    if(!authedUser){
+        return (
+            <Login />
         )
     }
 
@@ -74,7 +81,7 @@ const NewQuestion = (props) => {
 const mapStateToProps = ({authedUser, questions, users}) => {
     return {
         authedUser,
-        isInitialized: isInitialized(questions, users, authedUser)
+        isInitialized: isInitialized(questions, users, true)
     }
 }
 

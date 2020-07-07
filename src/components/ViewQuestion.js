@@ -5,6 +5,8 @@ import AnswerQuestion from "./AnswerQuestion";
 import ViewResult from "./ViewResult";
 import {saveAnswer} from "../actions/questionActions";
 import Loading from "./Loading";
+import Page404 from "./Page404";
+import Login from "./Login";
 
 const ViewQuestion = React.memo((props) => {
     const {questions, users, question_id, authedUser, isInitialized, dispatch} = props
@@ -15,7 +17,19 @@ const ViewQuestion = React.memo((props) => {
         )
     }
 
+    if(!authedUser){
+        return (
+            <Login />
+        )
+    }
+
     const question = questions[question_id]
+
+    if (!question) {
+        return (
+            <Page404 />
+        )
+    }
     const answered = isQuestionAnswered(question, authedUser)
     const author = users[question.author]
 
@@ -40,7 +54,7 @@ const mapStateToProps = ({questions, authedUser, users}, ownProps) => {
         questions,
         users,
         authedUser,
-        isInitialized: isInitialized(questions, users, authedUser)
+        isInitialized: isInitialized(questions, users, true)
     }
 }
 

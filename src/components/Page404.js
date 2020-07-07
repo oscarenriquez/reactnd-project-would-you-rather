@@ -5,7 +5,7 @@ import Typography from "@material-ui/core/Typography";
 const Page404 = () => {
     return (
         <Grid container justify={"center"}>
-            <Grid item xs={6} justify={"center"}>
+            <Grid item xs={6}>
                 <Typography variant="h3" component="h4">
                     Error 404, page not found!
                 </Typography>

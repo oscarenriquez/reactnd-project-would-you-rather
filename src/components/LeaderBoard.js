@@ -3,13 +3,20 @@ import {connect} from "react-redux";
 import Leader from "./Leader";
 import {isInitialized} from "../utils/helpers";
 import Loading from "./Loading";
+import Login from "./Login";
 
 const LeaderBoard = (props) => {
-    const {users, isInitialized} = props
+    const {users, isInitialized, authedUser} = props
 
     if(!isInitialized) {
         return (
             <Loading />
+        )
+    }
+
+    if(!authedUser){
+        return (
+            <Login />
         )
     }
 
@@ -37,7 +44,8 @@ const LeaderBoard = (props) => {
 
 const mapStateToProps = ({users, questions, authedUser}) => ({
     users,
-    isInitialized: isInitialized(questions, users, authedUser)
+    authedUser,
+    isInitialized: isInitialized(questions, users, true)
 })
 
 export default connect(mapStateToProps) ( LeaderBoard )

@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from "react";
+import React, {useState, useRef} from "react";
 import Button from "@material-ui/core/Button";
 import CardHeader from "@material-ui/core/CardHeader";
 import Card from "@material-ui/core/Card";
@@ -11,19 +11,14 @@ import Avatar from "@material-ui/core/Avatar";
 import Loading from "./Loading";
 
 const Login = (props) => {
-    const {users, authedUser} = props
+    const {users, authedUser, history} = props
     const [newUser, setNewUser] = useState(authedUser)
     const wrapper = useRef(null);
 
-    useEffect(() => {
-        if(!authedUser && sessionStorage.getItem('authedUser')) {
-            props.dispatch(login(JSON.parse(sessionStorage.getItem('authedUser'))))
-            props.history.push("/home")
-        }
-    })
-
     if(authedUser && authedUser.id) {
-        props.history.push("/home")
+        if(history) {
+            history.push("/home")
+        }
     }
 
     if(!users || Object.keys(users).length === 0) {
@@ -41,7 +36,9 @@ const Login = (props) => {
         if(newUser && newUser.id) {
             sessionStorage.setItem("authedUser", JSON.stringify(newUser))
             props.dispatch(login(newUser))
-            props.history.push('/home')
+            if(history) {
+                history.push('/home')
+            }
         }
     }
 
