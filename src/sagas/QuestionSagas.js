@@ -2,10 +2,11 @@ import {ADD_QUESTION, FETCH_QUESTIONS, SAVE_ANSWER} from "../constants/Question"
 import {put, takeEvery, fork, call} from "redux-saga/effects";
 import * as Api from "../api/_DATA"
 import {fetchQuestions, receiveQuestions, saveQuestion} from "../actions/questionActions";
+import {addQuestionToUser} from "../actions/userActions";
 
 /**
  * Saga to fetch questions from the API
- * @returns {Generator<<"CALL", CallEffectDescriptor>|<"PUT", PutEffectDescriptor<{payload: *, type: string}>>, void, *>}
+ * @returns generator
  */
 function* fetchQuestionsSaga() {
     try {
@@ -20,7 +21,7 @@ function* fetchQuestionsSaga() {
 /**
  * Saga to save question answer and fetch the complete list of questions
  * @param action
- * @returns {Generator<<"CALL", CallEffectDescriptor>|<"PUT", PutEffectDescriptor<{type: string}>>, void, *>}
+ * @returns generator
  */
 function* saveAnswerSaga(action) {
     try {
@@ -35,12 +36,13 @@ function* saveAnswerSaga(action) {
 /**
  * Saga to Add and Save a new question
  * @param action
- * @returns {Generator<<"CALL", CallEffectDescriptor>|<"PUT", PutEffectDescriptor<{payload: *, type: string}>>, void, *>}
+ * @returns generator
  */
-function* addQuestionSaga(action) {
+function* addQuestionSaga({payload}) {
     try {
-        const question = yield call(Api._saveQuestion, action.payload);
+        const question = yield call(Api._saveQuestion, payload);
         yield put(saveQuestion(question));
+        yield put(addQuestionToUser(payload.author, question.id))
     } catch (e) {
         console.warn("[fetchQuestionsSaga] error ", e)
         alert("Error adding new question, please try again later!")

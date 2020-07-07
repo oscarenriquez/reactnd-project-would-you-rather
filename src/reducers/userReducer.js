@@ -1,4 +1,4 @@
-import {RECEIVE_USERS} from "../constants/User";
+import {ADD_QUESTION_USER, RECEIVE_USERS} from "../constants/User";
 
 /**
  * Users Reducer
@@ -12,6 +12,15 @@ export default function users(state={}, action){
             return {
                 ...state,
                 ...action.payload
+            }
+        case ADD_QUESTION_USER:
+            const {user, questionId} = action
+            return {
+                ...state,
+                [user] : {
+                    ...state[user],
+                    questions: state[user].questions.concat(questionId)
+                }
             }
         default:
             return state
